@@ -5,7 +5,7 @@ import curses
 import unicornhathd
 
 def draw_pixel(x, y, col):
-    unicornhathd.set_pixel(x, 16 - 1 - y, *col)
+    unicornhathd.set_pixel(x, 12 - y, *col)
 
 def init():
     unicornhathd.rotation(270)
@@ -68,34 +68,34 @@ def main():
             ".": (0, 0, 0)
             }
 
-        fx, fy = 8, (9 + 3)
+        fx, fy = 8.0, 9.0
 
         timer = 0.0
         key = ''
         while key != ord('q'):
             key = stdscr.getch()
             if key == curses.KEY_UP:
-                stdscr.addstr(2, 20, "Up")
-                fy -= 1
+                fy -= 1.0
             elif key == curses.KEY_DOWN:
-                stdscr.addstr(3, 20, "Down")
-                fy += 1
+                fy += 1.0
             elif key == curses.KEY_LEFT:
-                stdscr.addstr(4, 20, "Left")
-                fx -= 1
+                fx -= 1.0
             elif key == curses.KEY_RIGHT:
-                stdscr.addstr(5, 20, "Right")
-                fx += 1
+                fx += 1.0
+
+            # Deal with movement of logs
+            if fy <= 3.0:
+                fx -= 0.01 * lanes[int(fy)][0]
 
             for y, lane in enumerate(lanes):
                 start_pos = int(timer * lane[0])
                 if start_pos < 0:
                     start_pos = 64 - (abs(start_pos) % 64)
                 for i in range(16):
-                    draw_pixel(i, y+3, objs[lane[1][(start_pos + i) % 64]])
+                    draw_pixel(i, y, objs[lane[1][(start_pos + i) % 64]])
 
             # Draw frog
-            draw_pixel(fx, fy, (0, 255, 0))
+            draw_pixel(int(fx), int(fy), (0, 255, 0))
 
             unicornhathd.show()
             time.sleep(0.01)
