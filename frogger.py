@@ -4,8 +4,19 @@ import time
 import curses
 import unicornhathd
 
+danger_buffer = [False] * 16 * 16
+
 def draw_pixel(x, y, col):
     unicornhathd.set_pixel(x, 12 - y, *col)
+
+def set_danger(x, y, char):
+    danger = False
+    if char not in ".jklph":
+        danger = True
+    danger_buffer[y * 16 + x] = danger
+
+def get_danger(x, y):
+    return danger_buffer[y * 16 + x]
 
 def init():
     unicornhathd.rotation(270)
@@ -87,12 +98,18 @@ def main():
             if fy <= 3.0:
                 fx -= 0.01 * lanes[int(fy)][0]
 
+            # # Is frog in danger?
+            if (fx < 0.0 or fx >= 16.0) or get_danger(int(fx), int(fy)):
+                fx, fy = 8.0, 9.0                
+
             for y, lane in enumerate(lanes):
                 start_pos = int(timer * lane[0])
                 if start_pos < 0:
                     start_pos = 64 - (abs(start_pos) % 64)
                 for i in range(16):
-                    draw_pixel(i, y, objs[lane[1][(start_pos + i) % 64]])
+                    obj = lane[1][(start_pos + i) % 64]
+                    draw_pixel(i, y, objs[obj])
+                    set_danger(i, y, obj)
 
             # Draw frog
             draw_pixel(int(fx), int(fy), (0, 255, 0))
