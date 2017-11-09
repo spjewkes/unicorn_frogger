@@ -39,7 +39,7 @@ def main():
         stdscr = init()
 
         lanes = [
-            ( 0.0, "wwwhhwwwhhwwwhhwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"),
+            ( 0.0, "wwhhwwwhhwwwhhwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"),
             (-3.0, ",,,jllk,,jllllk,,,,,,,jllk,,,,,jk,,,jlllk,,,,jllllk,,,,jlllk,,,,"),
             ( 3.0, ",,,,jllk,,,,,jllk,,,,jllk,,,,,,,,,jllk,,,,,jk,,,,,,jllllk,,,,,,,"),
             ( 2.0, ",,jlk,,,,,jlk,,,,,jk,,,,,jlk,,,jlk,,,,jk,,,,jllk,,,,jk,,,,,,jk,,"),
@@ -85,9 +85,9 @@ def main():
         key = ''
         while key != ord('q'):
             key = stdscr.getch()
-            if key == curses.KEY_UP:
+            if key == curses.KEY_UP and fy > 0.0:
                 fy -= 1.0
-            elif key == curses.KEY_DOWN:
+            elif key == curses.KEY_DOWN and fy < 9.0:
                 fy += 1.0
             elif key == curses.KEY_LEFT:
                 fx -= 1.0
