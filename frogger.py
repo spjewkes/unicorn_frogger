@@ -3,6 +3,7 @@
 import time
 import curses
 import unicornhathd
+import math
 
 danger_buffer = [False] * 16 * 16
 
@@ -94,12 +95,17 @@ def main():
             elif key == curses.KEY_RIGHT:
                 fx += 1.0
 
+            if fx < 0.0:
+                fx = 0.0
+            if fx > 15:
+                fx = 15.0
+
             # Deal with movement of logs
             if fy <= 3.0:
                 fx -= 0.01 * lanes[int(fy)][0]
 
-            # # Is frog in danger?
-            if (fx < 0.0 or fx >= 16.0) or get_danger(int(fx), int(fy)):
+            # Is frog in danger?
+            if get_danger(int(fx), int(fy)):
                 fx, fy = 8.0, 9.0                
 
             for y, lane in enumerate(lanes):
