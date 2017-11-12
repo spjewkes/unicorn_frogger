@@ -117,9 +117,7 @@ def main():
                 # have to sync the frog with the log its landing on. Otherwise,
                 # the frog might die due to the log moving slightly ahead of the frog.
                 # This could be considered a feature but I'd prefer it to be turned off
-                log_pos = timer * lanes[int(fy)][0]
-                if log_pos < 0:
-                    log_pos = 64 - (abs(log_pos) % 64)
+                log_pos = get_log_pos(timer, lanes[int(fy)][0])
                 log_denom, log_numer = math.modf(log_pos)
                 frog_denom, frog_numer = math.modf(fx)
                 fx = frog_numer + log_denom
@@ -127,9 +125,7 @@ def main():
                 fx -= 0.01 * lanes[int(fy)][0]
 
             for y, lane in enumerate(lanes):
-                start_pos = int(timer * lane[0])
-                if start_pos < 0:
-                    start_pos = 64 - (abs(start_pos) % 64)
+                start_pos = int(get_log_pos(timer, lane[0]))
                 for i in range(16):
                     obj = lane[1][(start_pos + i) % 64]
                     draw_pixel(i, y, objs[obj])
