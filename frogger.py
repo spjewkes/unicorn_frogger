@@ -35,6 +35,12 @@ def term():
     curses.endwin()
     unicornhathd.off()
 
+def get_log_pos(timer, lane_speed):
+    log_pos = timer * lane_speed
+    if log_pos < 0:
+        log_pos = 64 - (abs(log_pos) % 64)
+    return log_pos
+
 def main():
     try:
         stdscr = init()
@@ -112,6 +118,8 @@ def main():
                 # the frog might die due to the log moving slightly ahead of the frog.
                 # This could be considered a feature but I'd prefer it to be turned off
                 log_pos = timer * lanes[int(fy)][0]
+                if log_pos < 0:
+                    log_pos = 64 - (abs(log_pos) % 64)
                 log_denom, log_numer = math.modf(log_pos)
                 frog_denom, frog_numer = math.modf(fx)
                 fx = frog_numer + log_denom
