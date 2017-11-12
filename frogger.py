@@ -85,6 +85,10 @@ def main():
         timer = 0.0
         key = ''
         while key != ord('q'):
+            # Is frog in danger?
+            if get_danger(int(fx), int(fy)):
+                fx, fy = 8.0, 9.0                
+
             key = stdscr.getch()
             if key == curses.KEY_UP and fy > 0.0:
                 fy -= 1.0
@@ -102,11 +106,17 @@ def main():
 
             # Deal with movement of logs
             if fy <= 3.0:
+                # Because the game is working purely in an integer display but
+                # using fractions to control the speed of moving objects, we
+                # have to sync the frog with the log its landing on. Otherwise,
+                # the frog might die due to the log moving slightly ahead of the frog.
+                # This could be considered a feature but I'd prefer it to be turned off
+                log_pos = timer * lanes[int(fy)][0]
+                log_denom, log_numer = math.modf(pos)
+                frog_denom, frog_numer = math.modf(fx)
+                fx = frog_numer + log_denom
+                # Now factor in log movement - as we're abount to move these
                 fx -= 0.01 * lanes[int(fy)][0]
-
-            # Is frog in danger?
-            if get_danger(int(fx), int(fy)):
-                fx, fy = 8.0, 9.0                
 
             for y, lane in enumerate(lanes):
                 start_pos = int(timer * lane[0])
