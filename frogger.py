@@ -112,7 +112,7 @@ def main():
                 # the frog might die due to the log moving slightly ahead of the frog.
                 # This could be considered a feature but I'd prefer it to be turned off
                 log_pos = timer * lanes[int(fy)][0]
-                log_denom, log_numer = math.modf(pos)
+                log_denom, log_numer = math.modf(log_pos)
                 frog_denom, frog_numer = math.modf(fx)
                 fx = frog_numer + log_denom
                 # Now factor in log movement - as we're abount to move these
