@@ -23,7 +23,7 @@ def set_danger(x, y, char):
     character passed in.
     """
     danger = False
-    if char not in ".jklph":
+    if char not in ".lph":
         danger = True
     danger_buffer[y * 16 + x] = danger
 
@@ -63,32 +63,25 @@ def main():
 
         lanes = [
             (0.0, "wwhhwwwhhwwwhhwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"),
-            (-3.0,",,,jllk,,jllllk,,,,,,,jllk,,,,,jk,,,jlllk,,,,jllllk,,,,jlllk,,,,"),
-            (3.0, ",,,,jllk,,,,,jllk,,,,jllk,,,,,,,,,jllk,,,,,jk,,,,,,jllllk,,,,,,,"),
-            (2.0, ",,jlk,,,,,jlk,,,,,jk,,,,,jlk,,,jlk,,,,jk,,,,jllk,,,,jk,,,,,,jk,,"),
+            (-3.0,",,,llll,,llllll,,,,,,,llll,,,,,ll,,,lllll,,,,llllll,,,,lllll,,,,"),
+            (3.0, ",,,,llll,,,,,llll,,,,llll,,,,,,,,,llll,,,,,ll,,,,,,llllll,,,,,,,"),
+            (2.0, ",,lll,,,,,lll,,,,,ll,,,,,lll,,,lll,,,,ll,,,,llll,,,,ll,,,,,,ll,,"),
             (0.0, "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"),
-            (-3.0,"....asdf.......asdf....asdf..........asdf........asdf....asdf..."),
-            (3.0, ".....ty..ty....ty....ty.....ty........ty..ty.ty......ty.......ty"),
-            (-4.0,"..zx.....zx.........zx..zx........zx...zx...zx....zx...zx...zx.."),
-            (2.0, "..ty.....ty.......ty.....ty......ty..ty.ty.......ty....ty......."),
+            (-3.0,"....bbbb.......bbbb....bbbb..........bbbb........bbbb....bbbb..."),
+            (3.0, ".....yy..yy....yy....yy.....yy........yy..yy.yy......yy.......yy"),
+            (-4.0,"..xx.....xx.........xx..xx........xx...xx...xx....xx...xx...xx.."),
+            (2.0, "..yy.....yy.......yy.....yy......yy..yy.yy.......yy....yy......."),
             (0.0, "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp")
             ]
 
         objs = {
             # Bus
-            "a": (64, 16, 0),
-            "s": (64, 16, 0),
-            "d": (64, 16, 0),
-            "f": (64, 16, 0),
+            "b": (64, 16, 0),
             # Log
-            "j": (64, 32, 8),
             "l": (64, 32, 8),
-            "k": (64, 32, 8),
             # Car 1
-            "z": (64, 64, 0),
             "x": (64, 64, 0),
             # Car 2
-            "t": (0, 0, 64),
             "y": (0, 0, 64),
             # Wall
             "w": (64, 0, 0),
@@ -128,16 +121,18 @@ def main():
 
             # Deal with movement of logs
             if frog_y <= 3.0:
-                # Because the game is working purely in an integer display but
-                # using fractions to control the speed of moving objects, we
-                # have to sync the frog with the log its landing on. Otherwise,
-                # the frog might die due to the log moving slightly ahead of the frog.
-                # This could be considered a feature but I'd prefer it to be turned off
+                # The game is using fractions to control the speed of moving objects.
+                # This can cause problems for the sideways movement of the frog
+                # as it is not quite in sync (fractionally speaking). The worst
+                # case is that the frog may die after seemingly landing on the end of
+                # the log (because the log moves slightly ahead of the frog).
+                # The solution here is to give the frog the same fractional value as
+                # the log row it has landed on:
                 log_pos = get_log_pos(timer, lanes[int(frog_y)][0])
                 log_denom, _ = math.modf(log_pos)
                 _, frog_numer = math.modf(frog_x)
                 frog_x = frog_numer + log_denom
-                # Now factor in log movement - as we're abount to move these
+                # Now factor in log movement - as we're about to move these
                 frog_x -= 0.01 * lanes[int(frog_y)][0]
 
             for y, lane in enumerate(lanes):
